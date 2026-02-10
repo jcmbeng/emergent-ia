@@ -11,13 +11,14 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../../src/constants/colors';
+import { useTheme } from '../../src/contexts/ThemeContext';
 import { TransactionCard } from '../../src/components/TransactionCard';
 import { useWalletStore } from '../../src/stores/walletStore';
 import { apiService } from '../../src/services/api';
 
 export default function TransactionsScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const { transactions, setTransactions } = useWalletStore();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -52,12 +53,12 @@ export default function TransactionsScreen() {
     : transactions.filter(t => t.type === filter);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>Transactions</Text>
+        <Text style={[styles.title, { color: colors.text }]}>Transactions</Text>
         <TouchableOpacity>
-          <Ionicons name="search-outline" size={24} color={Colors.text} />
+          <Ionicons name="search-outline" size={24} color={colors.text} />
         </TouchableOpacity>
       </View>
 
@@ -72,14 +73,17 @@ export default function TransactionsScreen() {
             key={type}
             style={[
               styles.filterChip,
-              filter === type && styles.filterChipActive,
+              { 
+                backgroundColor: filter === type ? colors.primary : colors.surface,
+                borderColor: filter === type ? colors.primary : colors.border,
+              },
             ]}
             onPress={() => setFilter(type)}
           >
             <Text
               style={[
                 styles.filterChipText,
-                filter === type && styles.filterChipTextActive,
+                { color: filter === type ? '#FFFFFF' : colors.text },
               ]}
             >
               {type.charAt(0).toUpperCase() + type.slice(1)}
@@ -92,11 +96,11 @@ export default function TransactionsScreen() {
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
         }
       >
         {loading ? (
-          <Text style={styles.emptyText}>Loading...</Text>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>Loading...</Text>
         ) : filteredTransactions.length > 0 ? (
           filteredTransactions.map((transaction) => (
             <TransactionCard
@@ -107,8 +111,8 @@ export default function TransactionsScreen() {
           ))
         ) : (
           <View style={styles.emptyContainer}>
-            <Ionicons name="document-text-outline" size={64} color={Colors.textLight} />
-            <Text style={styles.emptyText}>No transactions found</Text>
+            <Ionicons name="document-text-outline" size={64} color={colors.textTertiary} />
+            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>No transactions found</Text>
           </View>
         )}
       </ScrollView>
@@ -119,7 +123,6 @@ export default function TransactionsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -131,7 +134,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: Colors.text,
   },
   filterContainer: {
     paddingHorizontal: 24,
@@ -142,21 +144,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: Colors.border,
-  },
-  filterChipActive: {
-    backgroundColor: Colors.primary,
-    borderColor: Colors.primary,
+    marginRight: 8,
   },
   filterChipText: {
     fontSize: 14,
     fontWeight: '600',
-    color: Colors.text,
-  },
-  filterChipTextActive: {
-    color: Colors.surface,
   },
   scrollContent: {
     paddingHorizontal: 24,
@@ -168,7 +161,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: Colors.textSecondary,
     marginTop: 16,
   },
 });
