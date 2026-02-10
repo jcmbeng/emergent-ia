@@ -1,0 +1,195 @@
+import { User, Wallet, Transaction, Beneficiary } from '../types';
+
+// Mock User Data
+export const mockUser: User = {
+  id: '1',
+  email: 'john.doe@example.com',
+  firstName: 'John',
+  lastName: 'Doe',
+  phone: '+237123456789',
+  kycLevel: 2,
+  mfaEnabled: true,
+  biometricEnabled: true,
+  createdAt: new Date().toISOString(),
+};
+
+// Mock Wallet Data
+export const mockWallets: Wallet[] = [
+  {
+    id: '1',
+    userId: '1',
+    currency: 'USD',
+    balance: 2450.75,
+    status: 'active',
+  },
+  {
+    id: '2',
+    userId: '1',
+    currency: 'XAF',
+    balance: 1250000,
+    status: 'active',
+  },
+  {
+    id: '3',
+    userId: '1',
+    currency: 'EUR',
+    balance: 890.50,
+    status: 'active',
+  },
+];
+
+// Mock Transactions
+export const mockTransactions: Transaction[] = [
+  {
+    id: '1',
+    type: 'receive',
+    amount: 500.00,
+    currency: 'USD',
+    senderName: 'Alice Smith',
+    senderEmail: 'alice@example.com',
+    status: 'completed',
+    method: 'wire',
+    fee: 0,
+    description: 'Payment for services',
+    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '2',
+    type: 'send',
+    amount: 150.00,
+    currency: 'USD',
+    recipientName: 'Bob Johnson',
+    recipientEmail: 'bob@example.com',
+    status: 'completed',
+    method: 'wire',
+    fee: 2.50,
+    description: 'Lunch payment',
+    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '3',
+    type: 'deposit',
+    amount: 1000.00,
+    currency: 'USD',
+    status: 'completed',
+    method: 'momo_mtn',
+    fee: 10.00,
+    description: 'MTN Mobile Money deposit',
+    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '4',
+    type: 'withdraw',
+    amount: 200.00,
+    currency: 'USD',
+    status: 'completed',
+    method: 'momo_orange',
+    fee: 5.00,
+    description: 'Orange Money withdrawal',
+    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '5',
+    type: 'send',
+    amount: 75.50,
+    currency: 'USD',
+    recipientName: 'Sarah Williams',
+    recipientEmail: 'sarah@example.com',
+    status: 'completed',
+    method: 'wire',
+    fee: 1.50,
+    description: 'Gift',
+    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '6',
+    type: 'receive',
+    amount: 320.00,
+    currency: 'USD',
+    senderName: 'Mike Davis',
+    senderEmail: 'mike@example.com',
+    status: 'pending',
+    method: 'wire',
+    fee: 0,
+    description: 'Freelance work',
+    createdAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '7',
+    type: 'send',
+    amount: 450.00,
+    currency: 'USD',
+    recipientName: 'Emma Brown',
+    recipientEmail: 'emma@example.com',
+    status: 'completed',
+    method: 'wire',
+    fee: 4.50,
+    description: 'Rent contribution',
+    createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '8',
+    type: 'deposit',
+    amount: 800.00,
+    currency: 'USD',
+    status: 'completed',
+    method: 'momo_mtn',
+    fee: 8.00,
+    description: 'MTN Mobile Money deposit',
+    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+];
+
+// Mock Beneficiaries
+export const mockBeneficiaries: Beneficiary[] = [
+  {
+    id: '1',
+    userId: '1',
+    beneficiaryName: 'Alice Smith',
+    beneficiaryEmail: 'alice@example.com',
+    beneficiaryPhone: '+237987654321',
+    nickname: 'Alice',
+    createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '2',
+    userId: '1',
+    beneficiaryName: 'Bob Johnson',
+    beneficiaryEmail: 'bob@example.com',
+    beneficiaryPhone: '+237123456789',
+    nickname: 'Bob',
+    createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '3',
+    userId: '1',
+    beneficiaryName: 'Sarah Williams',
+    beneficiaryEmail: 'sarah@example.com',
+    beneficiaryPhone: '+237555666777',
+    nickname: 'Sarah',
+    createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '4',
+    userId: '1',
+    beneficiaryName: 'Emma Brown',
+    beneficiaryEmail: 'emma@example.com',
+    beneficiaryPhone: '+237444555666',
+    nickname: 'Emma',
+    createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+];
+
+// Helper function to simulate API delay
+export const delay = (ms: number = 500) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Generate random transaction ID
+export const generateId = () => Math.random().toString(36).substr(2, 9);
