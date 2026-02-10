@@ -10,11 +10,12 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../../src/constants/colors';
+import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 
 export default function MoreScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const { user, logout } = useAuth();
 
   const handleLogout = () => {
@@ -89,58 +90,58 @@ export default function MoreScreen() {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Header */}
         <View style={styles.header}>
-          <Text style={styles.title}>More</Text>
+          <Text style={[styles.title, { color: colors.text }]}>More</Text>
         </View>
 
         {/* Profile Card */}
-        <View style={styles.profileCard}>
-          <View style={styles.avatar}>
+        <View style={[styles.profileCard, { backgroundColor: colors.surface }]}>
+          <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
             <Text style={styles.avatarText}>
               {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
             </Text>
           </View>
           <View style={styles.profileInfo}>
-            <Text style={styles.profileName}>
+            <Text style={[styles.profileName, { color: colors.text }]}>
               {user?.firstName} {user?.lastName}
             </Text>
-            <Text style={styles.profileEmail}>{user?.email}</Text>
+            <Text style={[styles.profileEmail, { color: colors.textSecondary }]}>{user?.email}</Text>
           </View>
         </View>
 
         {/* Menu Items */}
-        <View style={styles.menuContainer}>
+        <View style={[styles.menuContainer, { backgroundColor: colors.surface }]}>
           {menuItems.map((item, index) => (
             <TouchableOpacity
               key={index}
-              style={styles.menuItem}
+              style={[styles.menuItem, { borderBottomColor: colors.border }]}
               onPress={item.onPress}
               activeOpacity={0.7}
             >
               <View style={styles.menuItemLeft}>
-                <View style={styles.menuIcon}>
-                  <Ionicons name={item.icon} size={24} color={Colors.primary} />
+                <View style={[styles.menuIcon, { backgroundColor: colors.primary + '10' }]}>
+                  <Ionicons name={item.icon} size={24} color={colors.primary} />
                 </View>
                 <View style={styles.menuTextContainer}>
-                  <Text style={styles.menuTitle}>{item.title}</Text>
-                  <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
+                  <Text style={[styles.menuTitle, { color: colors.text }]}>{item.title}</Text>
+                  <Text style={[styles.menuSubtitle, { color: colors.textSecondary }]}>{item.subtitle}</Text>
                 </View>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={Colors.textSecondary} />
+              <Ionicons name="chevron-forward" size={20} color={colors.textSecondary} />
             </TouchableOpacity>
           ))}
         </View>
 
         {/* Logout Button */}
-        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Ionicons name="log-out-outline" size={20} color={Colors.error} />
-          <Text style={styles.logoutText}>Logout</Text>
+        <TouchableOpacity style={[styles.logoutButton, { backgroundColor: colors.surface }]} onPress={handleLogout}>
+          <Ionicons name="log-out-outline" size={20} color={colors.error} />
+          <Text style={[styles.logoutText, { color: colors.error }]}>Logout</Text>
         </TouchableOpacity>
 
-        <Text style={styles.version}>Version 1.0.0</Text>
+        <Text style={[styles.version, { color: colors.textSecondary }]}>Version 1.0.0</Text>
       </ScrollView>
     </SafeAreaView>
   );
@@ -149,7 +150,6 @@ export default function MoreScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   scrollContent: {
     paddingBottom: 24,
@@ -161,12 +161,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: Colors.text,
   },
   profileCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surface,
     marginHorizontal: 24,
     borderRadius: 16,
     padding: 20,
@@ -176,14 +174,13 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarText: {
     fontSize: 24,
     fontWeight: '700',
-    color: Colors.surface,
+    color: '#FFFFFF',
   },
   profileInfo: {
     marginLeft: 16,
@@ -192,15 +189,12 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 20,
     fontWeight: '700',
-    color: Colors.text,
     marginBottom: 4,
   },
   profileEmail: {
     fontSize: 14,
-    color: Colors.textSecondary,
   },
   menuContainer: {
-    backgroundColor: Colors.surface,
     marginHorizontal: 24,
     borderRadius: 16,
     overflow: 'hidden',
@@ -212,7 +206,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
   },
   menuItemLeft: {
     flexDirection: 'row',
@@ -223,7 +216,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: Colors.primary + '10',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -234,18 +226,15 @@ const styles = StyleSheet.create({
   menuTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.text,
     marginBottom: 2,
   },
   menuSubtitle: {
     fontSize: 13,
-    color: Colors.textSecondary,
   },
   logoutButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.surface,
     marginHorizontal: 24,
     borderRadius: 16,
     padding: 16,
@@ -255,11 +244,9 @@ const styles = StyleSheet.create({
   logoutText: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.error,
   },
   version: {
     fontSize: 12,
-    color: Colors.textSecondary,
     textAlign: 'center',
   },
 });
