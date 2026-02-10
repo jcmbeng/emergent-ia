@@ -63,23 +63,23 @@ export default function HomeScreen() {
   const recentTransactions = transactions.slice(0, 5);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={colors.primary} />
         }
         showsVerticalScrollIndicator={false}
       >
         {/* Header */}
         <SafeAreaView edges={['top']} style={styles.header}>
           <TouchableOpacity style={styles.profileButton}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>{user?.firstName?.charAt(0)}</Text>
+            <View style={[styles.avatar, { backgroundColor: colors.primary }]}>
+              <Text style={[styles.avatarText, { color: colors.surface }]}>{user?.firstName?.charAt(0)}</Text>
             </View>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.notificationButton}>
-            <Ionicons name="notifications-outline" size={24} color={Colors.text} />
+          <TouchableOpacity style={[styles.notificationButton, { backgroundColor: colors.surface }]}>
+            <Ionicons name="notifications-outline" size={24} color={colors.text} />
           </TouchableOpacity>
         </SafeAreaView>
 
