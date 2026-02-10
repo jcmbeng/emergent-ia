@@ -11,7 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../src/constants/colors';
+import { useTheme } from '../src/contexts/ThemeContext';
 import { apiService } from '../src/services/api';
 import { useWalletStore } from '../src/stores/walletStore';
 import { Beneficiary } from '../src/types';
@@ -20,6 +20,7 @@ import { Input } from '../src/components/Input';
 
 export default function BeneficiariesScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const { beneficiaries, setBeneficiaries } = useWalletStore();
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
@@ -149,38 +150,38 @@ export default function BeneficiariesScreen() {
   const getAccountTypeColor = (type: string) => {
     switch (type) {
       case 'bank':
-        return '#3B82F6';
+        return colors.info;
       case 'ewallet':
-        return Colors.primary;
+        return colors.primary;
       case 'momo_mtn':
-        return '#FFCC00';
+        return colors.mtnYellow;
       case 'momo_orange':
-        return '#FF6600';
+        return colors.orangeColor;
       default:
-        return Colors.textSecondary;
+        return colors.textSecondary;
     }
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color={Colors.text} />
+        <TouchableOpacity onPress={() => router.back()} style={[styles.backButton, { backgroundColor: colors.surface }]}>
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
-        <Text style={styles.title}>Beneficiaries</Text>
+        <Text style={[styles.title, { color: colors.text }]}>Beneficiaries</Text>
         <TouchableOpacity onPress={() => setShowAddModal(true)}>
-          <Ionicons name="add" size={28} color={Colors.primary} />
+          <Ionicons name="add" size={28} color={colors.primary} />
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Beneficiaries List */}
         {loading ? (
-          <Text style={styles.emptyText}>Loading...</Text>
+          <Text style={[styles.emptyText, { color: colors.textSecondary }]}>Loading...</Text>
         ) : beneficiaries.length > 0 ? (
           beneficiaries.map((beneficiary) => (
-            <View key={beneficiary.id} style={styles.beneficiaryCard}>
+            <View key={beneficiary.id} style={[styles.beneficiaryCard, { backgroundColor: colors.surface }]}>
               <View
                 style={[
                   styles.beneficiaryAvatar,
@@ -190,22 +191,22 @@ export default function BeneficiariesScreen() {
                 <Ionicons
                   name={getAccountTypeIcon(beneficiary.accountType) as any}
                   size={24}
-                  color={Colors.surface}
+                  color="#FFFFFF"
                 />
               </View>
               <View style={styles.beneficiaryInfo}>
-                <Text style={styles.beneficiaryName}>{beneficiary.beneficiaryName}</Text>
-                <Text style={styles.beneficiaryType}>
+                <Text style={[styles.beneficiaryName, { color: colors.text }]}>{beneficiary.beneficiaryName}</Text>
+                <Text style={[styles.beneficiaryType, { color: colors.primary }]}>
                   {getAccountTypeLabel(beneficiary.accountType)}
                 </Text>
                 {beneficiary.beneficiaryEmail && (
-                  <Text style={styles.beneficiaryDetail}>{beneficiary.beneficiaryEmail}</Text>
+                  <Text style={[styles.beneficiaryDetail, { color: colors.textSecondary }]}>{beneficiary.beneficiaryEmail}</Text>
                 )}
                 {beneficiary.beneficiaryPhone && (
-                  <Text style={styles.beneficiaryDetail}>{beneficiary.beneficiaryPhone}</Text>
+                  <Text style={[styles.beneficiaryDetail, { color: colors.textSecondary }]}>{beneficiary.beneficiaryPhone}</Text>
                 )}
                 {beneficiary.accountNumber && (
-                  <Text style={styles.beneficiaryDetail}>
+                  <Text style={[styles.beneficiaryDetail, { color: colors.textSecondary }]}>
                     {beneficiary.bankName} - {beneficiary.accountNumber}
                   </Text>
                 )}
@@ -215,15 +216,15 @@ export default function BeneficiariesScreen() {
                   handleDeleteBeneficiary(beneficiary.id, beneficiary.beneficiaryName)
                 }
               >
-                <Ionicons name="trash-outline" size={20} color={Colors.error} />
+                <Ionicons name="trash-outline" size={20} color={colors.error} />
               </TouchableOpacity>
             </View>
           ))
         ) : (
           <View style={styles.emptyContainer}>
-            <Ionicons name="people-outline" size={64} color={Colors.textLight} />
-            <Text style={styles.emptyText}>No beneficiaries yet</Text>
-            <Text style={styles.emptySubtext}>Add people you frequently send money to</Text>
+            <Ionicons name="people-outline" size={64} color={colors.textTertiary} />
+            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>No beneficiaries yet</Text>
+            <Text style={[styles.emptySubtext, { color: colors.textTertiary }]}>Add people you frequently send money to</Text>
           </View>
         )}
       </ScrollView>
@@ -235,35 +236,36 @@ export default function BeneficiariesScreen() {
         transparent={false}
         onRequestClose={() => setShowAddModal(false)}
       >
-        <SafeAreaView style={styles.modalContainer}>
-          <View style={styles.modalHeader}>
+        <SafeAreaView style={[styles.modalContainer, { backgroundColor: colors.background }]}>
+          <View style={[styles.modalHeader, { borderBottomColor: colors.border }]}>
             <TouchableOpacity onPress={() => setShowAddModal(false)}>
-              <Ionicons name="close" size={28} color={Colors.text} />
+              <Ionicons name="close" size={28} color={colors.text} />
             </TouchableOpacity>
-            <Text style={styles.modalTitle}>Add Beneficiary</Text>
+            <Text style={[styles.modalTitle, { color: colors.text }]}>Add Beneficiary</Text>
             <View style={{ width: 28 }} />
           </View>
 
           <ScrollView contentContainerStyle={styles.modalContent}>
             {/* Account Type Selection */}
-            <Text style={styles.sectionLabel}>Select Account Type</Text>
+            <Text style={[styles.sectionLabel, { color: colors.text }]}>Select Account Type</Text>
             <View style={styles.typeGrid}>
               <TouchableOpacity
                 style={[
                   styles.typeCard,
-                  selectedType === 'ewallet' && styles.typeCardActive,
+                  { backgroundColor: colors.surface },
+                  selectedType === 'ewallet' && { borderColor: colors.primary, backgroundColor: colors.primary + '10' },
                 ]}
                 onPress={() => setSelectedType('ewallet')}
               >
                 <Ionicons
                   name="wallet"
                   size={32}
-                  color={selectedType === 'ewallet' ? Colors.primary : Colors.textSecondary}
+                  color={selectedType === 'ewallet' ? colors.primary : colors.textSecondary}
                 />
                 <Text
                   style={[
                     styles.typeLabel,
-                    selectedType === 'ewallet' && styles.typeLabelActive,
+                    { color: selectedType === 'ewallet' ? colors.primary : colors.textSecondary },
                   ]}
                 >
                   e-Wallet
@@ -273,19 +275,20 @@ export default function BeneficiariesScreen() {
               <TouchableOpacity
                 style={[
                   styles.typeCard,
-                  selectedType === 'momo_mtn' && styles.typeCardActive,
+                  { backgroundColor: colors.surface },
+                  selectedType === 'momo_mtn' && { borderColor: colors.mtnYellow, backgroundColor: colors.mtnYellow + '10' },
                 ]}
                 onPress={() => setSelectedType('momo_mtn')}
               >
                 <Ionicons
                   name="phone-portrait"
                   size={32}
-                  color={selectedType === 'momo_mtn' ? '#FFCC00' : Colors.textSecondary}
+                  color={selectedType === 'momo_mtn' ? colors.mtnYellow : colors.textSecondary}
                 />
                 <Text
                   style={[
                     styles.typeLabel,
-                    selectedType === 'momo_mtn' && styles.typeLabelActive,
+                    { color: selectedType === 'momo_mtn' ? colors.mtnYellow : colors.textSecondary },
                   ]}
                 >
                   MTN MoMo
@@ -295,19 +298,20 @@ export default function BeneficiariesScreen() {
               <TouchableOpacity
                 style={[
                   styles.typeCard,
-                  selectedType === 'momo_orange' && styles.typeCardActive,
+                  { backgroundColor: colors.surface },
+                  selectedType === 'momo_orange' && { borderColor: colors.orangeColor, backgroundColor: colors.orangeColor + '10' },
                 ]}
                 onPress={() => setSelectedType('momo_orange')}
               >
                 <Ionicons
                   name="phone-portrait"
                   size={32}
-                  color={selectedType === 'momo_orange' ? '#FF6600' : Colors.textSecondary}
+                  color={selectedType === 'momo_orange' ? colors.orangeColor : colors.textSecondary}
                 />
                 <Text
                   style={[
                     styles.typeLabel,
-                    selectedType === 'momo_orange' && styles.typeLabelActive,
+                    { color: selectedType === 'momo_orange' ? colors.orangeColor : colors.textSecondary },
                   ]}
                 >
                   Orange Money
@@ -317,19 +321,20 @@ export default function BeneficiariesScreen() {
               <TouchableOpacity
                 style={[
                   styles.typeCard,
-                  selectedType === 'bank' && styles.typeCardActive,
+                  { backgroundColor: colors.surface },
+                  selectedType === 'bank' && { borderColor: colors.info, backgroundColor: colors.info + '10' },
                 ]}
                 onPress={() => setSelectedType('bank')}
               >
                 <Ionicons
                   name="business"
                   size={32}
-                  color={selectedType === 'bank' ? '#3B82F6' : Colors.textSecondary}
+                  color={selectedType === 'bank' ? colors.info : colors.textSecondary}
                 />
                 <Text
                   style={[
                     styles.typeLabel,
-                    selectedType === 'bank' && styles.typeLabelActive,
+                    { color: selectedType === 'bank' ? colors.info : colors.textSecondary },
                   ]}
                 >
                   Bank Account
@@ -359,14 +364,14 @@ export default function BeneficiariesScreen() {
                     icon="mail-outline"
                   />
                   <TouchableOpacity
-                    style={styles.scanButton}
+                    style={[styles.scanButton, { backgroundColor: colors.primary + '10' }]}
                     onPress={() => {
                       setShowAddModal(false);
                       router.push('/qr/scan');
                     }}
                   >
-                    <Ionicons name="qr-code" size={20} color={Colors.primary} />
-                    <Text style={styles.scanButtonText}>Scan QR Code</Text>
+                    <Ionicons name="qr-code" size={20} color={colors.primary} />
+                    <Text style={[styles.scanButtonText, { color: colors.primary }]}>Scan QR Code</Text>
                   </TouchableOpacity>
                 </>
               )}
@@ -422,7 +427,6 @@ export default function BeneficiariesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   header: {
     flexDirection: 'row',
@@ -431,10 +435,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 16,
   },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   title: {
     fontSize: 20,
     fontWeight: '700',
-    color: Colors.text,
   },
   scrollContent: {
     paddingHorizontal: 24,
@@ -443,7 +453,6 @@ const styles = StyleSheet.create({
   beneficiaryCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surface,
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
@@ -462,18 +471,15 @@ const styles = StyleSheet.create({
   beneficiaryName: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.text,
     marginBottom: 4,
   },
   beneficiaryType: {
     fontSize: 12,
     fontWeight: '600',
-    color: Colors.primary,
     marginBottom: 2,
   },
   beneficiaryDetail: {
     fontSize: 13,
-    color: Colors.textSecondary,
   },
   emptyContainer: {
     alignItems: 'center',
@@ -481,17 +487,14 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 16,
-    color: Colors.textSecondary,
     marginTop: 16,
   },
   emptySubtext: {
     fontSize: 14,
-    color: Colors.textLight,
     marginTop: 8,
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -500,12 +503,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: Colors.border,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: Colors.text,
   },
   modalContent: {
     paddingHorizontal: 24,
@@ -515,7 +516,6 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.text,
     marginBottom: 16,
   },
   typeGrid: {
@@ -526,26 +526,17 @@ const styles = StyleSheet.create({
   },
   typeCard: {
     width: '48%',
-    backgroundColor: Colors.surface,
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
     borderWidth: 2,
     borderColor: 'transparent',
   },
-  typeCardActive: {
-    borderColor: Colors.primary,
-    backgroundColor: Colors.primary + '10',
-  },
   typeLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: Colors.textSecondary,
     marginTop: 8,
     textAlign: 'center',
-  },
-  typeLabelActive: {
-    color: Colors.primary,
   },
   form: {
     marginTop: 8,
@@ -554,7 +545,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: Colors.primary + '10',
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -563,6 +553,5 @@ const styles = StyleSheet.create({
   scanButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.primary,
   },
 });
