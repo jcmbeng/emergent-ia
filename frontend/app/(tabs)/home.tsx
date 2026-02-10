@@ -12,7 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Colors } from '../../src/constants/colors';
+import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useWalletStore } from '../../src/stores/walletStore';
 import { apiService } from '../../src/services/api';
@@ -20,6 +20,7 @@ import { TransactionCard } from '../../src/components/TransactionCard';
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const { user } = useAuth();
   const { wallets, selectedWallet, transactions, setWallets, setSelectedWallet, setTransactions } = useWalletStore();
   const [refreshing, setRefreshing] = useState(false);
