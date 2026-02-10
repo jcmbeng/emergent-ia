@@ -13,50 +13,66 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
+// Premium Fintech Color Palette - Light Mode (Default)
 const LightColors = {
-  primary: '#0066FF',
+  primary: '#0066FF',        // Electric Blue - buttons, CTAs
   primaryDark: '#0052CC',
   primaryLight: '#338FFF',
-  secondary: '#00D66F',
-  background: '#F5F5F5',
-  backgroundLight: '#FFFFFF',
-  surface: '#FFFFFF',
-  surfaceLight: '#FAFAFA',
-  card: '#FFFFFF',
-  error: '#FF3B30',
-  warning: '#FFCC00',
-  success: '#00D66F',
-  text: '#000000',
-  textSecondary: '#666666',
-  textTertiary: '#999999',
-  border: '#E0E0E0',
-  disabled: '#CCCCCC',
-  placeholder: '#999999',
+  accent: '#00B894',         // Teal - highlights, active states
+  secondary: '#00D4AA',
+  background: '#FFFFFF',     // Clean White
+  backgroundLight: '#F6F8FA',
+  surface: '#F6F8FA',        // Light Gray - cards
+  surfaceLight: '#FFFFFF',
+  card: '#F6F8FA',
+  error: '#EF4444',          // Coral Red
+  warning: '#F59E0B',        // Amber Gold
+  success: '#10B981',        // Emerald Green
+  info: '#3B82F6',           // Sky Blue
+  text: '#1A1A2E',           // Deep Black
+  textSecondary: '#6B7280',  // Muted Gray
+  textTertiary: '#9CA3AF',
+  textLight: '#9CA3AF',
+  border: '#E1E4E8',         // Soft Gray
+  divider: '#E1E4E8',
+  disabled: '#D1D5DB',
+  placeholder: '#9CA3AF',
   gradient1: '#0066FF',
-  gradient2: '#00D66F',
+  gradient2: '#00D4AA',
+  // Mobile Money Colors
+  mtnYellow: '#FFCC00',
+  orangeColor: '#FF6600',
 };
 
+// Premium Fintech Color Palette - Dark Mode
 const DarkColors = {
-  primary: '#0066FF',
+  primary: '#0066FF',        // Electric Blue
   primaryDark: '#0052CC',
   primaryLight: '#338FFF',
-  secondary: '#00D66F',
-  background: '#000000',
-  backgroundLight: '#1A1A1A',
-  surface: '#242424',
-  surfaceLight: '#2D2D2D',
-  card: '#1E1E1E',
-  error: '#FF3B30',
-  warning: '#FFCC00',
-  success: '#00D66F',
-  text: '#FFFFFF',
-  textSecondary: '#8E8E93',
-  textTertiary: '#636366',
-  border: '#3A3A3C',
-  disabled: '#48484A',
-  placeholder: '#636366',
+  accent: '#00D4AA',         // Cyan Glow
+  secondary: '#00D4AA',
+  background: '#0D1117',     // Deep Navy
+  backgroundLight: '#161B22',
+  surface: '#161B22',        // Charcoal - cards
+  surfaceLight: '#1C2128',
+  card: '#161B22',
+  error: '#EF4444',          // Coral Red
+  warning: '#F59E0B',        // Amber Gold
+  success: '#10B981',        // Emerald Green
+  info: '#3B82F6',           // Sky Blue
+  text: '#FFFFFF',           // Pure White
+  textSecondary: '#8B949E',  // Cool Gray
+  textTertiary: '#6E7681',
+  textLight: '#6E7681',
+  border: '#30363D',         // Slate
+  divider: '#30363D',
+  disabled: '#484F58',
+  placeholder: '#6E7681',
   gradient1: '#0066FF',
-  gradient2: '#00D66F',
+  gradient2: '#00D4AA',
+  // Mobile Money Colors
+  mtnYellow: '#FFCC00',
+  orangeColor: '#FF6600',
 };
 
 export const ThemeProvider = ({ children }: { children: ReactNode }) => {
