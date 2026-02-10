@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { Colors } from '../../src/constants/colors';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useWalletStore } from '../../src/stores/walletStore';
@@ -23,6 +24,7 @@ export default function HomeScreen() {
   const { wallets, selectedWallet, transactions, setWallets, setSelectedWallet, setTransactions } = useWalletStore();
   const [refreshing, setRefreshing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [balanceVisible, setBalanceVisible] = useState(true);
 
   useEffect(() => {
     loadWalletData();
@@ -46,7 +48,6 @@ export default function HomeScreen() {
       }
     } catch (error: any) {
       console.error('Failed to load wallet data:', error);
-      Alert.alert('Error', 'Failed to load wallet data');
     } finally {
       setLoading(false);
     }
@@ -61,98 +62,118 @@ export default function HomeScreen() {
   const recentTransactions = transactions.slice(0, 5);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={Colors.primary} />
         }
+        showsVerticalScrollIndicator={false}
       >
         {/* Header */}
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.greeting}>Hello,</Text>
-            <Text style={styles.userName}>{user?.firstName || 'User'}</Text>
-          </View>
+        <SafeAreaView edges={['top']} style={styles.header}>
+          <TouchableOpacity style={styles.profileButton}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>{user?.firstName?.charAt(0)}</Text>
+            </View>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.notificationButton}>
             <Ionicons name="notifications-outline" size={24} color={Colors.text} />
           </TouchableOpacity>
-        </View>
+        </SafeAreaView>
 
-        {/* Wallet Card */}
-        <View style={styles.walletCard}>
-          <View style={styles.walletHeader}>
-            <Text style={styles.walletLabel}>Total Balance</Text>
-            <TouchableOpacity>
-              <Ionicons name="eye-outline" size={20} color={Colors.surface} />
+        {/* Balance Card with Gradient */}
+        <LinearGradient
+          colors={[Colors.gradient1, Colors.gradient2]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.balanceCard}
+        >
+          <View style={styles.balanceHeader}>
+            <Text style={styles.balanceLabel}>Total Balance</Text>
+            <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)}>
+              <Ionicons name={balanceVisible ? 'eye-outline' : 'eye-off-outline'} size={20} color={Colors.surface} />
             </TouchableOpacity>
           </View>
           <Text style={styles.balance}>
-            {selectedWallet?.currency || 'USD'} {selectedWallet?.balance?.toFixed(2) || '0.00'}
+            {balanceVisible 
+              ? `${selectedWallet?.currency || 'USD'} ${selectedWallet?.balance?.toFixed(2) || '0.00'}`
+              : '****'}
           </Text>
-          <View style={styles.walletActions}>
+          
+          {/* Quick Actions Row */}
+          <View style={styles.quickActionsRow}>
             <TouchableOpacity
-              style={styles.actionButton}
+              style={styles.quickActionBtn}
               onPress={() => router.push('/(tabs)/send')}
             >
-              <Ionicons name="arrow-up" size={20} color={Colors.surface} />
-              <Text style={styles.actionText}>Send</Text>
+              <View style={styles.actionIconContainer}>
+                <Ionicons name="arrow-up" size={20} color={Colors.gradient1} />
+              </View>
+              <Text style={styles.actionBtnText}>Send</Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => router.push('/mobile-money/deposit')}
-            >
-              <Ionicons name="arrow-down" size={20} color={Colors.surface} />
-              <Text style={styles.actionText}>Deposit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => router.push('/qr/scan')}
-            >
-              <Ionicons name="qr-code" size={20} color={Colors.surface} />
-              <Text style={styles.actionText}>QR Pay</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
 
-        {/* Quick Actions */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Quick Actions</Text>
-          <View style={styles.quickActions}>
             <TouchableOpacity
-              style={styles.quickActionCard}
+              style={styles.quickActionBtn}
+              onPress={() => router.push('/send-to-bank')}
+            >
+              <View style={styles.actionIconContainer}>
+                <Ionicons name="business" size={20} color={Colors.gradient1} />
+              </View>
+              <Text style={styles.actionBtnText}>Bank</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.quickActionBtn}
               onPress={() => router.push('/mobile-money')}
             >
-              <View style={[styles.quickActionIcon, { backgroundColor: Colors.success + '20' }]}>
-                <Ionicons name="wallet" size={24} color={Colors.success} />
+              <View style={styles.actionIconContainer}>
+                <Ionicons name="arrow-down" size={20} color={Colors.gradient1} />
               </View>
-              <Text style={styles.quickActionText}>Mobile Money</Text>
+              <Text style={styles.actionBtnText}>Add</Text>
             </TouchableOpacity>
+
             <TouchableOpacity
-              style={styles.quickActionCard}
-              onPress={() => router.push('/beneficiaries')}
+              style={styles.quickActionBtn}
+              onPress={() => router.push('/qr/scan')}
             >
-              <View style={[styles.quickActionIcon, { backgroundColor: Colors.primary + '20' }]}>
-                <Ionicons name="people" size={24} color={Colors.primary} />
+              <View style={styles.actionIconContainer}>
+                <Ionicons name="qr-code" size={20} color={Colors.gradient1} />
               </View>
-              <Text style={styles.quickActionText}>Beneficiaries</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.quickActionCard}
-              onPress={() => router.push('/qr/generate')}
-            >
-              <View style={[styles.quickActionIcon, { backgroundColor: Colors.warning + '20' }]}>
-                <Ionicons name="qr-code-outline" size={24} color={Colors.warning} />
-              </View>
-              <Text style={styles.quickActionText}>My QR</Text>
+              <Text style={styles.actionBtnText}>QR</Text>
             </TouchableOpacity>
           </View>
+        </LinearGradient>
+
+        {/* Feature Cards */}
+        <View style={styles.featuresGrid}>
+          <TouchableOpacity
+            style={styles.featureCard}
+            onPress={() => router.push('/linked-accounts')}
+          >
+            <View style={[styles.featureIcon, { backgroundColor: '#FFCC00' + '20' }]}>
+              <Ionicons name="phone-portrait" size={24} color="#FFCC00" />
+            </View>
+            <Text style={styles.featureTitle}>Mobile Money</Text>
+            <Text style={styles.featureSubtitle}>Link accounts</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.featureCard}
+            onPress={() => router.push('/beneficiaries')}
+          >
+            <View style={[styles.featureIcon, { backgroundColor: Colors.primary + '20' }]}>
+              <Ionicons name="people" size={24} color={Colors.primary} />
+            </View>
+            <Text style={styles.featureTitle}>Beneficiaries</Text>
+            <Text style={styles.featureSubtitle}>Quick access</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Recent Transactions */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Recent Transactions</Text>
+            <Text style={styles.sectionTitle}>Transactions</Text>
             <TouchableOpacity onPress={() => router.push('/(tabs)/transactions')}>
               <Text style={styles.seeAllText}>See All</Text>
             </TouchableOpacity>
@@ -168,11 +189,14 @@ export default function HomeScreen() {
               />
             ))
           ) : (
-            <Text style={styles.emptyText}>No transactions yet</Text>
+            <View style={styles.emptyContainer}>
+              <Ionicons name="receipt-outline" size={48} color={Colors.textTertiary} />
+              <Text style={styles.emptyText}>No transactions yet</Text>
+            </View>
           )}
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -182,76 +206,119 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   scrollContent: {
-    paddingBottom: 24,
+    paddingBottom: 100,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
   },
-  greeting: {
-    fontSize: 14,
-    color: Colors.textSecondary,
+  profileButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  userName: {
-    fontSize: 24,
+  avatar: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: Colors.primary,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  avatarText: {
+    fontSize: 16,
     fontWeight: '700',
-    color: Colors.text,
+    color: Colors.surface,
   },
   notificationButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     backgroundColor: Colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
   },
-  walletCard: {
-    backgroundColor: Colors.primary,
-    marginHorizontal: 24,
-    borderRadius: 20,
+  balanceCard: {
+    marginHorizontal: 20,
+    borderRadius: 24,
     padding: 24,
-    marginBottom: 24,
+    marginBottom: 20,
   },
-  walletHeader: {
+  balanceHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 8,
   },
-  walletLabel: {
+  balanceLabel: {
     fontSize: 14,
     color: Colors.surface,
-    opacity: 0.8,
+    opacity: 0.9,
+    fontWeight: '500',
   },
   balance: {
-    fontSize: 36,
+    fontSize: 42,
     fontWeight: '700',
     color: Colors.surface,
     marginBottom: 24,
+    letterSpacing: -1,
   },
-  walletActions: {
+  quickActionsRow: {
     flexDirection: 'row',
     gap: 16,
   },
-  actionButton: {
+  quickActionBtn: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 12,
-    paddingVertical: 12,
     alignItems: 'center',
-    gap: 4,
+    gap: 8,
   },
-  actionText: {
+  actionIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: Colors.surface,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  actionBtnText: {
     fontSize: 12,
     color: Colors.surface,
     fontWeight: '600',
   },
-  section: {
-    paddingHorizontal: 24,
+  featuresGrid: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    gap: 12,
     marginBottom: 24,
+  },
+  featureCard: {
+    flex: 1,
+    backgroundColor: Colors.surface,
+    borderRadius: 16,
+    padding: 16,
+  },
+  featureIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  featureTitle: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: Colors.text,
+    marginBottom: 4,
+  },
+  featureSubtitle: {
+    fontSize: 13,
+    color: Colors.textSecondary,
+  },
+  section: {
+    paddingHorizontal: 20,
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -260,44 +327,22 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '700',
     color: Colors.text,
   },
   seeAllText: {
-    fontSize: 14,
+    fontSize: 15,
     color: Colors.primary,
     fontWeight: '600',
   },
-  quickActions: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  quickActionCard: {
-    flex: 1,
-    backgroundColor: Colors.surface,
-    borderRadius: 16,
-    padding: 16,
+  emptyContainer: {
     alignItems: 'center',
-    gap: 8,
-  },
-  quickActionIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  quickActionText: {
-    fontSize: 12,
-    color: Colors.text,
-    fontWeight: '600',
-    textAlign: 'center',
+    paddingVertical: 40,
   },
   emptyText: {
     fontSize: 14,
     color: Colors.textSecondary,
-    textAlign: 'center',
-    marginTop: 24,
+    marginTop: 12,
   },
 });
