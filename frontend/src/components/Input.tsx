@@ -8,7 +8,7 @@ import {
   TextInputProps,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../constants/colors';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface InputProps extends TextInputProps {
   label?: string;
@@ -24,18 +24,22 @@ export const Input: React.FC<InputProps> = ({
   isPassword,
   ...props
 }) => {
+  const { colors } = useTheme();
   const [showPassword, setShowPassword] = useState(false);
 
   return (
     <View style={styles.container}>
-      {label && <Text style={styles.label}>{label}</Text>}
-      <View style={[styles.inputContainer, error && styles.inputError]}>
+      {label && <Text style={[styles.label, { color: colors.text }]}>{label}</Text>}
+      <View style={[
+        styles.inputContainer, 
+        { backgroundColor: colors.surface, borderColor: error ? colors.error : colors.border }
+      ]}>
         {icon && (
-          <Ionicons name={icon} size={20} color={Colors.textSecondary} style={styles.icon} />
+          <Ionicons name={icon} size={20} color={colors.textSecondary} style={styles.icon} />
         )}
         <TextInput
-          style={styles.input}
-          placeholderTextColor={Colors.placeholder}
+          style={[styles.input, { color: colors.text }]}
+          placeholderTextColor={colors.placeholder}
           secureTextEntry={isPassword && !showPassword}
           {...props}
         />
@@ -44,12 +48,12 @@ export const Input: React.FC<InputProps> = ({
             <Ionicons
               name={showPassword ? 'eye-off-outline' : 'eye-outline'}
               size={20}
-              color={Colors.textSecondary}
+              color={colors.textSecondary}
             />
           </TouchableOpacity>
         )}
       </View>
-      {error && <Text style={styles.errorText}>{error}</Text>}
+      {error && <Text style={[styles.errorText, { color: colors.error }]}>{error}</Text>}
     </View>
   );
 };
@@ -61,21 +65,15 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 14,
     fontWeight: '600',
-    color: Colors.text,
     marginBottom: 8,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surface,
     borderRadius: 12,
     borderWidth: 1,
-    borderColor: Colors.border,
     paddingHorizontal: 16,
     height: 56,
-  },
-  inputError: {
-    borderColor: Colors.error,
   },
   icon: {
     marginRight: 12,
@@ -83,11 +81,9 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: Colors.text,
   },
   errorText: {
     fontSize: 12,
-    color: Colors.error,
     marginTop: 4,
   },
 });
