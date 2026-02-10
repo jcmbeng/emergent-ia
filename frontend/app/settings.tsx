@@ -30,7 +30,8 @@ export default function SettingsScreen() {
           <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.text }]}>Settings</Text>
-        <View style={{ width: 40 }} />\n      </View>
+        <View style={{ width: 40 }} />
+      </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Appearance Section */}
