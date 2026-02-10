@@ -87,7 +87,7 @@ export default function HomeScreen() {
 
         {/* Balance Card with Gradient */}
         <LinearGradient
-          colors={[Colors.gradient1, Colors.gradient2]}
+          colors={[colors.gradient1, colors.gradient2]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.balanceCard}
@@ -95,7 +95,7 @@ export default function HomeScreen() {
           <View style={styles.balanceHeader}>
             <Text style={styles.balanceLabel}>Total Balance</Text>
             <TouchableOpacity onPress={() => setBalanceVisible(!balanceVisible)}>
-              <Ionicons name={balanceVisible ? 'eye-outline' : 'eye-off-outline'} size={20} color={Colors.surface} />
+              <Ionicons name={balanceVisible ? 'eye-outline' : 'eye-off-outline'} size={20} color="#FFFFFF" />
             </TouchableOpacity>
           </View>
           <Text style={styles.balance}>
@@ -110,8 +110,8 @@ export default function HomeScreen() {
               style={styles.quickActionBtn}
               onPress={() => router.push('/(tabs)/send')}
             >
-              <View style={styles.actionIconContainer}>
-                <Ionicons name="arrow-up" size={20} color={Colors.gradient1} />
+              <View style={[styles.actionIconContainer, { backgroundColor: '#FFFFFF' }]}>
+                <Ionicons name="arrow-up" size={20} color={colors.gradient1} />
               </View>
               <Text style={styles.actionBtnText}>Send</Text>
             </TouchableOpacity>
@@ -120,8 +120,8 @@ export default function HomeScreen() {
               style={styles.quickActionBtn}
               onPress={() => router.push('/send-to-bank')}
             >
-              <View style={styles.actionIconContainer}>
-                <Ionicons name="business" size={20} color={Colors.gradient1} />
+              <View style={[styles.actionIconContainer, { backgroundColor: '#FFFFFF' }]}>
+                <Ionicons name="business" size={20} color={colors.gradient1} />
               </View>
               <Text style={styles.actionBtnText}>Bank</Text>
             </TouchableOpacity>
@@ -130,8 +130,8 @@ export default function HomeScreen() {
               style={styles.quickActionBtn}
               onPress={() => router.push('/mobile-money')}
             >
-              <View style={styles.actionIconContainer}>
-                <Ionicons name="arrow-down" size={20} color={Colors.gradient1} />
+              <View style={[styles.actionIconContainer, { backgroundColor: '#FFFFFF' }]}>
+                <Ionicons name="arrow-down" size={20} color={colors.gradient1} />
               </View>
               <Text style={styles.actionBtnText}>Add</Text>
             </TouchableOpacity>
@@ -140,8 +140,8 @@ export default function HomeScreen() {
               style={styles.quickActionBtn}
               onPress={() => router.push('/qr/scan')}
             >
-              <View style={styles.actionIconContainer}>
-                <Ionicons name="qr-code" size={20} color={Colors.gradient1} />
+              <View style={[styles.actionIconContainer, { backgroundColor: '#FFFFFF' }]}>
+                <Ionicons name="qr-code" size={20} color={colors.gradient1} />
               </View>
               <Text style={styles.actionBtnText}>QR</Text>
             </TouchableOpacity>
@@ -151,38 +151,38 @@ export default function HomeScreen() {
         {/* Feature Cards */}
         <View style={styles.featuresGrid}>
           <TouchableOpacity
-            style={styles.featureCard}
+            style={[styles.featureCard, { backgroundColor: colors.surface }]}
             onPress={() => router.push('/linked-accounts')}
           >
-            <View style={[styles.featureIcon, { backgroundColor: '#FFCC00' + '20' }]}>
-              <Ionicons name="phone-portrait" size={24} color="#FFCC00" />
+            <View style={[styles.featureIcon, { backgroundColor: colors.mtnYellow + '20' }]}>
+              <Ionicons name="phone-portrait" size={24} color={colors.mtnYellow} />
             </View>
-            <Text style={styles.featureTitle}>Mobile Money</Text>
-            <Text style={styles.featureSubtitle}>Link accounts</Text>
+            <Text style={[styles.featureTitle, { color: colors.text }]}>Mobile Money</Text>
+            <Text style={[styles.featureSubtitle, { color: colors.textSecondary }]}>Link accounts</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.featureCard}
+            style={[styles.featureCard, { backgroundColor: colors.surface }]}
             onPress={() => router.push('/beneficiaries')}
           >
-            <View style={[styles.featureIcon, { backgroundColor: Colors.primary + '20' }]}>
-              <Ionicons name="people" size={24} color={Colors.primary} />
+            <View style={[styles.featureIcon, { backgroundColor: colors.primary + '20' }]}>
+              <Ionicons name="people" size={24} color={colors.primary} />
             </View>
-            <Text style={styles.featureTitle}>Beneficiaries</Text>
-            <Text style={styles.featureSubtitle}>Quick access</Text>
+            <Text style={[styles.featureTitle, { color: colors.text }]}>Beneficiaries</Text>
+            <Text style={[styles.featureSubtitle, { color: colors.textSecondary }]}>Quick access</Text>
           </TouchableOpacity>
         </View>
 
         {/* Recent Transactions */}
         <View style={styles.section}>
           <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Transactions</Text>
+            <Text style={[styles.sectionTitle, { color: colors.text }]}>Transactions</Text>
             <TouchableOpacity onPress={() => router.push('/(tabs)/transactions')}>
-              <Text style={styles.seeAllText}>See All</Text>
+              <Text style={[styles.seeAllText, { color: colors.primary }]}>See All</Text>
             </TouchableOpacity>
           </View>
           {loading ? (
-            <Text style={styles.emptyText}>Loading...</Text>
+            <Text style={[styles.emptyText, { color: colors.textSecondary }]}>Loading...</Text>
           ) : recentTransactions.length > 0 ? (
             recentTransactions.map((transaction) => (
               <TransactionCard
@@ -193,8 +193,8 @@ export default function HomeScreen() {
             ))
           ) : (
             <View style={styles.emptyContainer}>
-              <Ionicons name="receipt-outline" size={48} color={Colors.textTertiary} />
-              <Text style={styles.emptyText}>No transactions yet</Text>
+              <Ionicons name="receipt-outline" size={48} color={colors.textTertiary} />
+              <Text style={[styles.emptyText, { color: colors.textSecondary }]}>No transactions yet</Text>
             </View>
           )}
         </View>
