@@ -18,6 +18,8 @@ import { useWalletStore } from '../../src/stores/walletStore';
 import { apiService } from '../../src/services/api';
 import { TransactionCard } from '../../src/components/TransactionCard';
 
+// Note: Colors constant removed - using theme context instead
+
 export default function HomeScreen() {
   const router = useRouter();
   const { colors } = useTheme();
