@@ -15,7 +15,7 @@ import { Colors } from '../src/constants/colors';
 import { apiService } from '../src/services/api';
 import { useWalletStore } from '../src/stores/walletStore';
 import { Beneficiary } from '../src/types';
-import { Button } from '../src/components/Input';
+import { Button } from '../src/components/Button';
 import { Input } from '../src/components/Input';
 
 export default function BeneficiariesScreen() {
