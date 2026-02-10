@@ -206,7 +206,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   scrollContent: {
     paddingBottom: 100,
@@ -226,20 +225,17 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
   },
   avatarText: {
     fontSize: 16,
     fontWeight: '700',
-    color: Colors.surface,
   },
   notificationButton: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: Colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -257,14 +253,14 @@ const styles = StyleSheet.create({
   },
   balanceLabel: {
     fontSize: 14,
-    color: Colors.surface,
+    color: '#FFFFFF',
     opacity: 0.9,
     fontWeight: '500',
   },
   balance: {
     fontSize: 42,
     fontWeight: '700',
-    color: Colors.surface,
+    color: '#FFFFFF',
     marginBottom: 24,
     letterSpacing: -1,
   },
@@ -281,13 +277,12 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: Colors.surface,
     justifyContent: 'center',
     alignItems: 'center',
   },
   actionBtnText: {
     fontSize: 12,
-    color: Colors.surface,
+    color: '#FFFFFF',
     fontWeight: '600',
   },
   featuresGrid: {
@@ -298,7 +293,6 @@ const styles = StyleSheet.create({
   },
   featureCard: {
     flex: 1,
-    backgroundColor: Colors.surface,
     borderRadius: 16,
     padding: 16,
   },
@@ -313,12 +307,10 @@ const styles = StyleSheet.create({
   featureTitle: {
     fontSize: 15,
     fontWeight: '600',
-    color: Colors.text,
     marginBottom: 4,
   },
   featureSubtitle: {
     fontSize: 13,
-    color: Colors.textSecondary,
   },
   section: {
     paddingHorizontal: 20,
@@ -332,11 +324,9 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: '700',
-    color: Colors.text,
   },
   seeAllText: {
     fontSize: 15,
-    color: Colors.primary,
     fontWeight: '600',
   },
   emptyContainer: {
@@ -345,7 +335,6 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 14,
-    color: Colors.textSecondary,
     marginTop: 12,
   },
 });
