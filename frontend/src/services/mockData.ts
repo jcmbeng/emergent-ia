@@ -157,6 +157,7 @@ export const mockBeneficiaries: Beneficiary[] = [
     beneficiaryEmail: 'alice@example.com',
     accountType: 'ewallet',
     nickname: 'Alice',
+    isValidated: true,
     createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
   },
   {
@@ -166,6 +167,7 @@ export const mockBeneficiaries: Beneficiary[] = [
     beneficiaryPhone: '+237123456789',
     accountType: 'momo_mtn',
     nickname: 'Bob MTN',
+    isValidated: true,
     createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
   },
   {
@@ -175,6 +177,7 @@ export const mockBeneficiaries: Beneficiary[] = [
     beneficiaryPhone: '+237555666777',
     accountType: 'momo_orange',
     nickname: 'Sarah OM',
+    isValidated: false,
     createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
   },
   {
@@ -182,10 +185,25 @@ export const mockBeneficiaries: Beneficiary[] = [
     userId: '1',
     beneficiaryName: 'Emma Brown',
     accountNumber: '1234567890',
-    bankName: 'Standard Bank',
+    iban: 'FR7630006000011234567890189',
+    bankName: 'BNP Paribas',
+    country: 'FR',
     accountType: 'bank',
     nickname: 'Emma Bank',
+    isValidated: true,
     createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '5',
+    userId: '1',
+    beneficiaryName: 'John Doe',
+    iban: 'DE89370400440532013000',
+    bankName: 'Deutsche Bank',
+    country: 'DE',
+    accountType: 'bank',
+    nickname: 'John DE',
+    isValidated: true,
+    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
   },
 ];
 
