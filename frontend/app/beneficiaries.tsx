@@ -6,6 +6,7 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
+  Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -14,18 +15,21 @@ import { Colors } from '../src/constants/colors';
 import { apiService } from '../src/services/api';
 import { useWalletStore } from '../src/stores/walletStore';
 import { Beneficiary } from '../src/types';
-import { Button } from '../src/components/Button';
+import { Button } from '../src/components/Input';
 import { Input } from '../src/components/Input';
 
 export default function BeneficiariesScreen() {
   const router = useRouter();
   const { beneficiaries, setBeneficiaries } = useWalletStore();
   const [loading, setLoading] = useState(true);
-  const [showAddForm, setShowAddForm] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [selectedType, setSelectedType] = useState<'bank' | 'ewallet' | 'momo_mtn' | 'momo_orange'>('ewallet');
   const [formData, setFormData] = useState({
     beneficiaryName: '',
     beneficiaryEmail: '',
     beneficiaryPhone: '',
+    accountNumber: '',
+    bankName: '',
     nickname: '',
   });
 
@@ -46,23 +50,47 @@ export default function BeneficiariesScreen() {
     }
   };
 
+  const resetForm = () => {
+    setFormData({
+      beneficiaryName: '',
+      beneficiaryEmail: '',
+      beneficiaryPhone: '',
+      accountNumber: '',
+      bankName: '',
+      nickname: '',
+    });
+  };
+
   const handleAddBeneficiary = async () => {
-    if (!formData.beneficiaryName || !formData.beneficiaryEmail) {
-      Alert.alert('Error', 'Please fill in required fields');
+    if (!formData.beneficiaryName) {
+      Alert.alert('Error', 'Beneficiary name is required');
+      return;
+    }
+
+    if (selectedType === 'ewallet' && !formData.beneficiaryEmail) {
+      Alert.alert('Error', 'Email is required for e-Wallet');
+      return;
+    }
+
+    if ((selectedType === 'momo_mtn' || selectedType === 'momo_orange') && !formData.beneficiaryPhone) {
+      Alert.alert('Error', 'Phone number is required for Mobile Money');
+      return;
+    }
+
+    if (selectedType === 'bank' && (!formData.accountNumber || !formData.bankName)) {
+      Alert.alert('Error', 'Account number and bank name are required');
       return;
     }
 
     try {
-      const response = await apiService.addBeneficiary(formData);
+      const response = await apiService.addBeneficiary({
+        ...formData,
+        accountType: selectedType,
+      });
       if (response.data.success) {
         Alert.alert('Success', 'Beneficiary added successfully');
-        setShowAddForm(false);
-        setFormData({
-          beneficiaryName: '',
-          beneficiaryEmail: '',
-          beneficiaryPhone: '',
-          nickname: '',
-        });
+        setShowAddModal(false);
+        resetForm();
         loadBeneficiaries();
       }
     } catch (error: any) {
@@ -88,6 +116,51 @@ export default function BeneficiariesScreen() {
     ]);
   };
 
+  const getAccountTypeIcon = (type: string) => {
+    switch (type) {
+      case 'bank':
+        return 'business';
+      case 'ewallet':
+        return 'wallet';
+      case 'momo_mtn':
+        return 'phone-portrait';
+      case 'momo_orange':
+        return 'phone-portrait';
+      default:
+        return 'person';
+    }
+  };
+
+  const getAccountTypeLabel = (type: string) => {
+    switch (type) {
+      case 'bank':
+        return 'Bank Account';
+      case 'ewallet':
+        return 'e-Wallet';
+      case 'momo_mtn':
+        return 'MTN MoMo';
+      case 'momo_orange':
+        return 'Orange Money';
+      default:
+        return type;
+    }
+  };
+
+  const getAccountTypeColor = (type: string) => {
+    switch (type) {
+      case 'bank':
+        return '#3B82F6';
+      case 'ewallet':
+        return Colors.primary;
+      case 'momo_mtn':
+        return '#FFCC00';
+      case 'momo_orange':
+        return '#FF6600';
+      default:
+        return Colors.textSecondary;
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
@@ -96,71 +169,45 @@ export default function BeneficiariesScreen() {
           <Ionicons name="arrow-back" size={24} color={Colors.text} />
         </TouchableOpacity>
         <Text style={styles.title}>Beneficiaries</Text>
-        <TouchableOpacity onPress={() => setShowAddForm(!showAddForm)}>
-          <Ionicons
-            name={showAddForm ? 'close' : 'add'}
-            size={24}
-            color={Colors.primary}
-          />
+        <TouchableOpacity onPress={() => setShowAddModal(true)}>
+          <Ionicons name="add" size={28} color={Colors.primary} />
         </TouchableOpacity>
       </View>
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Add Form */}
-        {showAddForm && (
-          <View style={styles.addForm}>
-            <Text style={styles.formTitle}>Add New Beneficiary</Text>
-            <Input
-              label="Full Name"
-              placeholder="Enter beneficiary name"
-              value={formData.beneficiaryName}
-              onChangeText={(text) => setFormData({ ...formData, beneficiaryName: text })}
-              icon="person-outline"
-            />
-            <Input
-              label="Email"
-              placeholder="Enter email address"
-              value={formData.beneficiaryEmail}
-              onChangeText={(text) => setFormData({ ...formData, beneficiaryEmail: text })}
-              keyboardType="email-address"
-              autoCapitalize="none"
-              icon="mail-outline"
-            />
-            <Input
-              label="Phone (Optional)"
-              placeholder="Enter phone number"
-              value={formData.beneficiaryPhone}
-              onChangeText={(text) => setFormData({ ...formData, beneficiaryPhone: text })}
-              keyboardType="phone-pad"
-              icon="call-outline"
-            />
-            <Input
-              label="Nickname (Optional)"
-              placeholder="Enter a nickname"
-              value={formData.nickname}
-              onChangeText={(text) => setFormData({ ...formData, nickname: text })}
-              icon="pricetag-outline"
-            />
-            <Button title="Add Beneficiary" onPress={handleAddBeneficiary} />
-          </View>
-        )}
-
         {/* Beneficiaries List */}
         {loading ? (
           <Text style={styles.emptyText}>Loading...</Text>
         ) : beneficiaries.length > 0 ? (
           beneficiaries.map((beneficiary) => (
             <View key={beneficiary.id} style={styles.beneficiaryCard}>
-              <View style={styles.beneficiaryAvatar}>
-                <Text style={styles.beneficiaryInitial}>
-                  {beneficiary.beneficiaryName.charAt(0)}
-                </Text>
+              <View
+                style={[
+                  styles.beneficiaryAvatar,
+                  { backgroundColor: getAccountTypeColor(beneficiary.accountType) },
+                ]}
+              >
+                <Ionicons
+                  name={getAccountTypeIcon(beneficiary.accountType) as any}
+                  size={24}
+                  color={Colors.surface}
+                />
               </View>
               <View style={styles.beneficiaryInfo}>
                 <Text style={styles.beneficiaryName}>{beneficiary.beneficiaryName}</Text>
-                <Text style={styles.beneficiaryEmail}>{beneficiary.beneficiaryEmail}</Text>
+                <Text style={styles.beneficiaryType}>
+                  {getAccountTypeLabel(beneficiary.accountType)}
+                </Text>
+                {beneficiary.beneficiaryEmail && (
+                  <Text style={styles.beneficiaryDetail}>{beneficiary.beneficiaryEmail}</Text>
+                )}
                 {beneficiary.beneficiaryPhone && (
-                  <Text style={styles.beneficiaryPhone}>{beneficiary.beneficiaryPhone}</Text>
+                  <Text style={styles.beneficiaryDetail}>{beneficiary.beneficiaryPhone}</Text>
+                )}
+                {beneficiary.accountNumber && (
+                  <Text style={styles.beneficiaryDetail}>
+                    {beneficiary.bankName} - {beneficiary.accountNumber}
+                  </Text>
                 )}
               </View>
               <TouchableOpacity
@@ -180,6 +227,194 @@ export default function BeneficiariesScreen() {
           </View>
         )}
       </ScrollView>
+
+      {/* Add Beneficiary Modal */}
+      <Modal
+        visible={showAddModal}
+        animationType="slide"
+        transparent={false}
+        onRequestClose={() => setShowAddModal(false)}
+      >
+        <SafeAreaView style={styles.modalContainer}>
+          <View style={styles.modalHeader}>
+            <TouchableOpacity onPress={() => setShowAddModal(false)}>
+              <Ionicons name="close" size={28} color={Colors.text} />
+            </TouchableOpacity>
+            <Text style={styles.modalTitle}>Add Beneficiary</Text>
+            <View style={{ width: 28 }} />
+          </View>
+
+          <ScrollView contentContainerStyle={styles.modalContent}>
+            {/* Account Type Selection */}
+            <Text style={styles.sectionLabel}>Select Account Type</Text>
+            <View style={styles.typeGrid}>
+              <TouchableOpacity
+                style={[
+                  styles.typeCard,
+                  selectedType === 'ewallet' && styles.typeCardActive,
+                ]}
+                onPress={() => setSelectedType('ewallet')}
+              >
+                <Ionicons
+                  name="wallet"
+                  size={32}
+                  color={selectedType === 'ewallet' ? Colors.primary : Colors.textSecondary}
+                />
+                <Text
+                  style={[
+                    styles.typeLabel,
+                    selectedType === 'ewallet' && styles.typeLabelActive,
+                  ]}
+                >
+                  e-Wallet
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.typeCard,
+                  selectedType === 'momo_mtn' && styles.typeCardActive,
+                ]}
+                onPress={() => setSelectedType('momo_mtn')}
+              >
+                <Ionicons
+                  name="phone-portrait"
+                  size={32}
+                  color={selectedType === 'momo_mtn' ? '#FFCC00' : Colors.textSecondary}
+                />
+                <Text
+                  style={[
+                    styles.typeLabel,
+                    selectedType === 'momo_mtn' && styles.typeLabelActive,
+                  ]}
+                >
+                  MTN MoMo
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.typeCard,
+                  selectedType === 'momo_orange' && styles.typeCardActive,
+                ]}
+                onPress={() => setSelectedType('momo_orange')}
+              >
+                <Ionicons
+                  name="phone-portrait"
+                  size={32}
+                  color={selectedType === 'momo_orange' ? '#FF6600' : Colors.textSecondary}
+                />
+                <Text
+                  style={[
+                    styles.typeLabel,
+                    selectedType === 'momo_orange' && styles.typeLabelActive,
+                  ]}
+                >
+                  Orange Money
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.typeCard,
+                  selectedType === 'bank' && styles.typeCardActive,
+                ]}
+                onPress={() => setSelectedType('bank')}
+              >
+                <Ionicons
+                  name="business"
+                  size={32}
+                  color={selectedType === 'bank' ? '#3B82F6' : Colors.textSecondary}
+                />
+                <Text
+                  style={[
+                    styles.typeLabel,
+                    selectedType === 'bank' && styles.typeLabelActive,
+                  ]}
+                >
+                  Bank Account
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Form Fields */}
+            <View style={styles.form}>
+              <Input
+                label="Beneficiary Name"
+                placeholder="Enter full name"
+                value={formData.beneficiaryName}
+                onChangeText={(text) => setFormData({ ...formData, beneficiaryName: text })}
+                icon="person-outline"
+              />
+
+              {selectedType === 'ewallet' && (
+                <>
+                  <Input
+                    label="Email Address"
+                    placeholder="Enter email"
+                    value={formData.beneficiaryEmail}
+                    onChangeText={(text) => setFormData({ ...formData, beneficiaryEmail: text })}
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    icon="mail-outline"
+                  />
+                  <TouchableOpacity
+                    style={styles.scanButton}
+                    onPress={() => {
+                      setShowAddModal(false);
+                      router.push('/qr/scan');
+                    }}
+                  >
+                    <Ionicons name="qr-code" size={20} color={Colors.primary} />
+                    <Text style={styles.scanButtonText}>Scan QR Code</Text>
+                  </TouchableOpacity>
+                </>
+              )}
+
+              {(selectedType === 'momo_mtn' || selectedType === 'momo_orange') && (
+                <Input
+                  label="Phone Number"
+                  placeholder="Enter phone number"
+                  value={formData.beneficiaryPhone}
+                  onChangeText={(text) => setFormData({ ...formData, beneficiaryPhone: text })}
+                  keyboardType="phone-pad"
+                  icon="call-outline"
+                />
+              )}
+
+              {selectedType === 'bank' && (
+                <>
+                  <Input
+                    label="Bank Name"
+                    placeholder="Enter bank name"
+                    value={formData.bankName}
+                    onChangeText={(text) => setFormData({ ...formData, bankName: text })}
+                    icon="business-outline"
+                  />
+                  <Input
+                    label="Account Number"
+                    placeholder="Enter account number"
+                    value={formData.accountNumber}
+                    onChangeText={(text) => setFormData({ ...formData, accountNumber: text })}
+                    keyboardType="number-pad"
+                    icon="card-outline"
+                  />
+                </>
+              )}
+
+              <Input
+                label="Nickname (Optional)"
+                placeholder="Enter a nickname"
+                value={formData.nickname}
+                onChangeText={(text) => setFormData({ ...formData, nickname: text })}
+                icon="pricetag-outline"
+              />
+
+              <Button title="Add Beneficiary" onPress={handleAddBeneficiary} />
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -205,18 +440,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 24,
   },
-  addForm: {
-    backgroundColor: Colors.surface,
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 24,
-  },
-  formTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: Colors.text,
-    marginBottom: 16,
-  },
   beneficiaryCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -229,14 +452,8 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  beneficiaryInitial: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: Colors.surface,
   },
   beneficiaryInfo: {
     flex: 1,
@@ -246,13 +463,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
     color: Colors.text,
+    marginBottom: 4,
+  },
+  beneficiaryType: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: Colors.primary,
     marginBottom: 2,
   },
-  beneficiaryEmail: {
-    fontSize: 13,
-    color: Colors.textSecondary,
-  },
-  beneficiaryPhone: {
+  beneficiaryDetail: {
     fontSize: 13,
     color: Colors.textSecondary,
   },
@@ -269,5 +488,81 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: Colors.textLight,
     marginTop: 8,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: Colors.background,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.border,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: Colors.text,
+  },
+  modalContent: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 40,
+  },
+  sectionLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.text,
+    marginBottom: 16,
+  },
+  typeGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    marginBottom: 24,
+  },
+  typeCard: {
+    width: '48%',
+    backgroundColor: Colors.surface,
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  typeCardActive: {
+    borderColor: Colors.primary,
+    backgroundColor: Colors.primary + '10',
+  },
+  typeLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: Colors.textSecondary,
+    marginTop: 8,
+    textAlign: 'center',
+  },
+  typeLabelActive: {
+    color: Colors.primary,
+  },
+  form: {
+    marginTop: 8,
+  },
+  scanButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.primary + '10',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 16,
+    gap: 8,
+  },
+  scanButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: Colors.primary,
   },
 });
