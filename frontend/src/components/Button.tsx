@@ -1,6 +1,6 @@
 import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
-import { Colors } from '../constants/colors';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ButtonProps {
   title: string;
@@ -21,35 +21,49 @@ export const Button: React.FC<ButtonProps> = ({
   style,
   textStyle,
 }) => {
-  const buttonStyle = [
-    styles.button,
-    variant === 'primary' && styles.primaryButton,
-    variant === 'secondary' && styles.secondaryButton,
-    variant === 'outline' && styles.outlineButton,
-    disabled && styles.disabledButton,
-    style,
-  ];
-
-  const textStyleCombined = [
-    styles.text,
-    variant === 'primary' && styles.primaryText,
-    variant === 'secondary' && styles.secondaryText,
-    variant === 'outline' && styles.outlineText,
-    disabled && styles.disabledText,
-    textStyle,
-  ];
+  const { colors } = useTheme();
+  
+  const getButtonStyle = () => {
+    const baseStyle = [styles.button];
+    
+    if (variant === 'primary') {
+      baseStyle.push({ backgroundColor: disabled ? colors.disabled : colors.primary });
+    } else if (variant === 'secondary') {
+      baseStyle.push({ backgroundColor: disabled ? colors.disabled : colors.secondary });
+    } else if (variant === 'outline') {
+      baseStyle.push({ 
+        backgroundColor: 'transparent', 
+        borderWidth: 2, 
+        borderColor: disabled ? colors.disabled : colors.primary 
+      });
+    }
+    
+    return [...baseStyle, style];
+  };
+  
+  const getTextStyle = () => {
+    const baseStyle = [styles.text];
+    
+    if (variant === 'outline') {
+      baseStyle.push({ color: disabled ? colors.textSecondary : colors.primary });
+    } else {
+      baseStyle.push({ color: disabled ? colors.textSecondary : '#FFFFFF' });
+    }
+    
+    return [...baseStyle, textStyle];
+  };
 
   return (
     <TouchableOpacity
-      style={buttonStyle}
+      style={getButtonStyle()}
       onPress={onPress}
       disabled={disabled || loading}
       activeOpacity={0.7}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'outline' ? Colors.primary : Colors.surface} />
+        <ActivityIndicator color={variant === 'outline' ? colors.primary : '#FFFFFF'} />
       ) : (
-        <Text style={textStyleCombined}>{title}</Text>
+        <Text style={getTextStyle()}>{title}</Text>
       )}
     </TouchableOpacity>
   );
@@ -63,35 +77,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 24,
   },
-  primaryButton: {
-    backgroundColor: Colors.primary,
-  },
-  secondaryButton: {
-    backgroundColor: Colors.secondary,
-  },
-  outlineButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: Colors.primary,
-  },
-  disabledButton: {
-    backgroundColor: Colors.disabled,
-    borderColor: Colors.disabled,
-  },
   text: {
     fontSize: 16,
     fontWeight: '600',
-  },
-  primaryText: {
-    color: Colors.surface,
-  },
-  secondaryText: {
-    color: Colors.surface,
-  },
-  outlineText: {
-    color: Colors.primary,
-  },
-  disabledText: {
-    color: Colors.textSecondary,
   },
 });
