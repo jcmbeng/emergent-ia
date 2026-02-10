@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors } from '../constants/colors';
+import { useTheme } from '../contexts/ThemeContext';
 import { Transaction } from '../types';
 import { format } from 'date-fns';
 
@@ -11,6 +11,7 @@ interface TransactionCardProps {
 }
 
 export const TransactionCard: React.FC<TransactionCardProps> = ({ transaction, onPress }) => {
+  const { colors } = useTheme();
   const isReceive = transaction.type === 'receive' || transaction.type === 'deposit';
   const iconName = {
     send: 'arrow-up-circle',
@@ -20,34 +21,38 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({ transaction, o
   }[transaction.type] as keyof typeof Ionicons.glyphMap;
 
   const statusColor = {
-    pending: Colors.warning,
-    completed: Colors.success,
-    failed: Colors.error,
+    pending: colors.warning,
+    completed: colors.success,
+    failed: colors.error,
   }[transaction.status];
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity 
+      style={[styles.container, { backgroundColor: colors.surface }]} 
+      onPress={onPress} 
+      activeOpacity={0.7}
+    >
       <View style={styles.content}>
-        <View style={[styles.iconContainer, { backgroundColor: isReceive ? Colors.success + '20' : Colors.error + '20' }]}>
+        <View style={[styles.iconContainer, { backgroundColor: (isReceive ? colors.success : colors.error) + '20' }]}>
           <Ionicons
             name={iconName}
             size={24}
-            color={isReceive ? Colors.success : Colors.error}
+            color={isReceive ? colors.success : colors.error}
           />
         </View>
         <View style={styles.details}>
-          <Text style={styles.title}>
+          <Text style={[styles.title, { color: colors.text }]}>
             {transaction.type === 'send' && transaction.recipientName}
             {transaction.type === 'receive' && transaction.senderName}
             {transaction.type === 'deposit' && 'Deposit'}
             {transaction.type === 'withdraw' && 'Withdraw'}
           </Text>
-          <Text style={styles.subtitle}>
+          <Text style={[styles.subtitle, { color: colors.textSecondary }]}>
             {format(new Date(transaction.createdAt), 'MMM dd, yyyy • hh:mm a')}
           </Text>
         </View>
         <View style={styles.amountContainer}>
-          <Text style={[styles.amount, { color: isReceive ? Colors.success : Colors.text }]}>
+          <Text style={[styles.amount, { color: isReceive ? colors.success : colors.text }]}>
             {isReceive ? '+' : '-'}{transaction.currency} {transaction.amount.toFixed(2)}
           </Text>
           <View style={[styles.statusBadge, { backgroundColor: statusColor + '20' }]}>
@@ -63,7 +68,6 @@ export const TransactionCard: React.FC<TransactionCardProps> = ({ transaction, o
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: Colors.surface,
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
@@ -86,12 +90,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 15,
     fontWeight: '600',
-    color: Colors.text,
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 13,
-    color: Colors.textSecondary,
   },
   amountContainer: {
     alignItems: 'flex-end',
