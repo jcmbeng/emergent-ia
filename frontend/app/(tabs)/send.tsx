@@ -14,12 +14,13 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Input } from '../../src/components/Input';
 import { Button } from '../../src/components/Button';
-import { Colors } from '../../src/constants/colors';
+import { useTheme } from '../../src/contexts/ThemeContext';
 import { apiService } from '../../src/services/api';
 import { useWalletStore } from '../../src/stores/walletStore';
 
 export default function SendScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const { selectedWallet, beneficiaries, setBeneficiaries } = useWalletStore();
   const [formData, setFormData] = useState({
     recipientEmail: '',
@@ -105,7 +106,7 @@ export default function SendScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -113,16 +114,16 @@ export default function SendScreen() {
         <ScrollView contentContainerStyle={styles.scrollContent}>
           {/* Header */}
           <View style={styles.header}>
-            <Text style={styles.title}>Send Money</Text>
+            <Text style={[styles.title, { color: colors.text }]}>Send Money</Text>
             <TouchableOpacity onPress={() => router.push('/beneficiaries')}>
-              <Ionicons name="people-outline" size={24} color={Colors.primary} />
+              <Ionicons name="people-outline" size={24} color={colors.primary} />
             </TouchableOpacity>
           </View>
 
           {/* Balance Display */}
-          <View style={styles.balanceCard}>
-            <Text style={styles.balanceLabel}>Available Balance</Text>
-            <Text style={styles.balance}>
+          <View style={[styles.balanceCard, { backgroundColor: colors.surface }]}>
+            <Text style={[styles.balanceLabel, { color: colors.textSecondary }]}>Available Balance</Text>
+            <Text style={[styles.balance, { color: colors.text }]}>
               {selectedWallet?.currency} {selectedWallet?.balance?.toFixed(2) || '0.00'}
             </Text>
           </View>
@@ -134,11 +135,11 @@ export default function SendScreen() {
                 style={styles.sectionHeader}
                 onPress={() => setShowBeneficiaries(!showBeneficiaries)}
               >
-                <Text style={styles.sectionTitle}>Recent Beneficiaries</Text>
+                <Text style={[styles.sectionTitle, { color: colors.text }]}>Recent Beneficiaries</Text>
                 <Ionicons
                   name={showBeneficiaries ? 'chevron-up' : 'chevron-down'}
                   size={20}
-                  color={Colors.text}
+                  color={colors.text}
                 />
               </TouchableOpacity>
               {showBeneficiaries && (
@@ -149,12 +150,12 @@ export default function SendScreen() {
                       style={styles.beneficiaryCard}
                       onPress={() => selectBeneficiary(beneficiary)}
                     >
-                      <View style={styles.beneficiaryAvatar}>
+                      <View style={[styles.beneficiaryAvatar, { backgroundColor: colors.primary }]}>
                         <Text style={styles.beneficiaryInitial}>
                           {beneficiary.beneficiaryName.charAt(0)}
                         </Text>
                       </View>
-                      <Text style={styles.beneficiaryName} numberOfLines={1}>
+                      <Text style={[styles.beneficiaryName, { color: colors.text }]} numberOfLines={1}>
                         {beneficiary.beneficiaryName}
                       </Text>
                     </TouchableOpacity>
@@ -217,7 +218,6 @@ export default function SendScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   keyboardView: {
     flex: 1,
@@ -235,10 +235,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '700',
-    color: Colors.text,
   },
   balanceCard: {
-    backgroundColor: Colors.surface,
     marginHorizontal: 24,
     borderRadius: 16,
     padding: 20,
@@ -246,13 +244,11 @@ const styles = StyleSheet.create({
   },
   balanceLabel: {
     fontSize: 14,
-    color: Colors.textSecondary,
     marginBottom: 4,
   },
   balance: {
     fontSize: 28,
     fontWeight: '700',
-    color: Colors.text,
   },
   section: {
     paddingHorizontal: 24,
@@ -267,7 +263,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: Colors.text,
   },
   beneficiaryCard: {
     alignItems: 'center',
@@ -278,7 +273,6 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: Colors.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 8,
@@ -286,11 +280,10 @@ const styles = StyleSheet.create({
   beneficiaryInitial: {
     fontSize: 24,
     fontWeight: '700',
-    color: Colors.surface,
+    color: '#FFFFFF',
   },
   beneficiaryName: {
     fontSize: 12,
-    color: Colors.text,
     textAlign: 'center',
   },
   form: {
