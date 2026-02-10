@@ -9,6 +9,8 @@ import {
   delay,
   generateId,
 } from './mockData';
+import { banksByCountry, Bank } from '../constants/banks';
+import { countries, Country } from '../constants/countries';
 
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || process.env.EXPO_PUBLIC_BACKEND_URL || 'https://api.finance.ethic-meida.com';
 
