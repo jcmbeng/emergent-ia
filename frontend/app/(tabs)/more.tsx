@@ -45,6 +45,12 @@ export default function MoreScreen() {
       onPress: () => router.push('/kyc'),
     },
     {
+      icon: 'link-outline' as keyof typeof Ionicons.glyphMap,
+      title: 'Linked Accounts',
+      subtitle: 'Manage Mobile Money accounts',
+      onPress: () => router.push('/linked-accounts'),
+    },
+    {
       icon: 'people-outline' as keyof typeof Ionicons.glyphMap,
       title: 'Beneficiaries',
       subtitle: 'Manage your saved recipients',
