@@ -1,11 +1,24 @@
 import axios, { AxiosInstance, AxiosError } from 'axios';
 import { secureStorage } from '../utils/storage';
 import Constants from 'expo-constants';
+import {
+  mockUser,
+  mockWallets,
+  mockTransactions,
+  mockBeneficiaries,
+  delay,
+  generateId,
+} from './mockData';
 
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || process.env.EXPO_PUBLIC_BACKEND_URL || 'https://api.finance.ethic-meida.com';
 
+// Set to true to use mock data, false to use real API
+const USE_MOCK = true;
+
 class ApiService {
   private api: AxiosInstance;
+  private mockTransactions = [...mockTransactions];
+  private mockBeneficiariesList = [...mockBeneficiaries];
 
   constructor() {
     this.api = axios.create({
