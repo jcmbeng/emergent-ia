@@ -13,11 +13,12 @@ import { useRouter } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Input } from '../../src/components/Input';
 import { Button } from '../../src/components/Button';
-import { Colors } from '../../src/constants/colors';
+import { useTheme } from '../../src/contexts/ThemeContext';
 import { useAuth } from '../../src/contexts/AuthContext';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const { colors } = useTheme();
   const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -64,7 +65,7 @@ export default function LoginScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
@@ -74,8 +75,8 @@ export default function LoginScreen() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.header}>
-            <Text style={styles.title}>Welcome Back</Text>
-            <Text style={styles.subtitle}>Sign in to your e-Wallet account</Text>
+            <Text style={[styles.title, { color: colors.text }]}>Welcome Back</Text>
+            <Text style={[styles.subtitle, { color: colors.textSecondary }]}>Sign in to your e-Wallet account</Text>
           </View>
 
           <View style={styles.form}>
@@ -101,7 +102,7 @@ export default function LoginScreen() {
             />
 
             <TouchableOpacity>
-              <Text style={styles.forgotPassword}>Forgot Password?</Text>
+              <Text style={[styles.forgotPassword, { color: colors.primary }]}>Forgot Password?</Text>
             </TouchableOpacity>
 
             <Button
@@ -112,9 +113,9 @@ export default function LoginScreen() {
             />
 
             <View style={styles.signupContainer}>
-              <Text style={styles.signupText}>Don't have an account? </Text>
+              <Text style={[styles.signupText, { color: colors.textSecondary }]}>Don't have an account? </Text>
               <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-                <Text style={styles.signupLink}>Sign Up</Text>
+                <Text style={[styles.signupLink, { color: colors.primary }]}>Sign Up</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -127,7 +128,6 @@ export default function LoginScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.background,
   },
   keyboardView: {
     flex: 1,
@@ -143,19 +143,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: '700',
-    color: Colors.text,
     marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
-    color: Colors.textSecondary,
   },
   form: {
     flex: 1,
   },
   forgotPassword: {
     fontSize: 14,
-    color: Colors.primary,
     textAlign: 'right',
     marginBottom: 24,
   },
@@ -169,11 +166,9 @@ const styles = StyleSheet.create({
   },
   signupText: {
     fontSize: 14,
-    color: Colors.textSecondary,
   },
   signupLink: {
     fontSize: 14,
-    color: Colors.primary,
     fontWeight: '600',
   },
 });
