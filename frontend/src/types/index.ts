@@ -39,9 +39,23 @@ export interface Beneficiary {
   id: string;
   userId: string;
   beneficiaryName: string;
-  beneficiaryEmail: string;
-  beneficiaryPhone: string;
+  beneficiaryEmail?: string;
+  beneficiaryPhone?: string;
+  accountType: 'bank' | 'ewallet' | 'momo_mtn' | 'momo_orange';
+  accountNumber?: string;
+  bankName?: string;
   nickname: string;
+  createdAt: string;
+}
+
+export interface LinkedAccount {
+  id: string;
+  userId: string;
+  provider: 'mtn' | 'orange';
+  phoneNumber: string;
+  accountName: string;
+  isVerified: boolean;
+  isPrimary: boolean;
   createdAt: string;
 }
 
