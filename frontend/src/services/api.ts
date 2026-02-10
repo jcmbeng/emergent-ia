@@ -482,6 +482,34 @@ class ApiService {
     }
     return this.api.post('/kyc/upgrade', { level, documents });
   }
+
+  // Banks and Countries
+  async getCountries() {
+    if (USE_MOCK) {
+      await delay(200);
+      return {
+        data: {
+          success: true,
+          data: countries,
+        },
+      };
+    }
+    return this.api.get('/banks/countries');
+  }
+
+  async getBanksByCountry(countryCode: string) {
+    if (USE_MOCK) {
+      await delay(300);
+      const banks = banksByCountry[countryCode] || [];
+      return {
+        data: {
+          success: true,
+          data: banks,
+        },
+      };
+    }
+    return this.api.get(`/banks/country/${countryCode}`);
+  }
 }
 
 export const apiService = new ApiService();
