@@ -9,7 +9,7 @@ The mobile e-Wallet app is now running with **complete mock data** so you can na
 ## 🚀 How to Access the App
 
 ### **Web Preview (Easiest)**
-**URL:** https://finpal-mvp.preview.emergentagent.com
+**URL:** https://ewallet-finance.preview.emergentagent.com
 
 ### **Mobile (Recommended for Best Experience)**
 1. Download **Expo Go** app from App Store or Play Store

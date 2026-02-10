@@ -243,7 +243,7 @@ All endpoints are configured and ready:
 ## 🚀 Ready for Testing
 
 ### Test URLs:
-- **Web Preview**: `https://finpal-mvp.preview.emergentagent.com`
+- **Web Preview**: `https://ewallet-finance.preview.emergentagent.com`
 - **Backend API**: `https://api.finance.ethic-meida.com`
 
 ### Test Flow:

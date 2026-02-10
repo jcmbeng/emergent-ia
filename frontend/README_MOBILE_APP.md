@@ -204,7 +204,7 @@ yarn android
 cd /app/frontend
 yarn web
 ```
-Access at: `https://finpal-mvp.preview.emergentagent.com`
+Access at: `https://ewallet-finance.preview.emergentagent.com`
 
 ## 🔄 App Flow
 
