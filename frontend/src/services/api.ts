@@ -149,7 +149,7 @@ class ApiService {
       return {
         data: {
           success: true,
-          data: mockWallets[0], // Return primary wallet
+          data: mockWallets, // Return all wallets including savings
         },
       };
     }
