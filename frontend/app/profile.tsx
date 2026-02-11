@@ -40,7 +40,7 @@ export default function ProfileScreen() {
           <Ionicons name="arrow-back" size={24} color={colors.text} />
         </TouchableOpacity>
         <Text style={[styles.title, { color: colors.text }]}>Profile</Text>
-        <TouchableOpacity style={[styles.editButton, { backgroundColor: colors.surface }]}>
+        <TouchableOpacity style={[styles.editButton, { backgroundColor: colors.surface }]} onPress={() => router.push('/edit-profile')}>
           <Ionicons name="create-outline" size={22} color={colors.primary} />
         </TouchableOpacity>
       </View>
