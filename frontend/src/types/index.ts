@@ -23,6 +23,10 @@ export interface User {
   firstName: string;
   lastName: string;
   phone?: string;
+  address?: string;
+  city?: string;
+  country?: string;
+  dateOfBirth?: string;
   kycLevel: number;
   mfaEnabled?: boolean;
   biometricEnabled?: boolean;
@@ -35,6 +39,9 @@ export interface Wallet {
   currency: string;
   balance: number;
   status: 'active' | 'inactive' | 'frozen';
+  type?: 'current' | 'savings';
+  name?: string;
+  interestRate?: number;
 }
 
 export interface Transaction {
